@@ -13,7 +13,7 @@ window.title("Project_1_transformer")
 window.geometry("600x400+%d+%d" % (window.winfo_screenwidth()/4, window.winfo_screenheight()/4))
 window.resizable(False, False)
 
-
+sample = ['.doc', '.ppt', '.pdf', '.hwp', '.jpg', '.png', 'zip']
 
 history_frame = LabelFrame(text='Foam_Select')
 history_listbox = Listbox(history_frame, selectmode='single', height=5)
@@ -44,12 +44,12 @@ def File_Transform(type):
             #확장자 지정한걸로 바꾸기
             print(name+ext,"을 변환합니다",name+type)
             os.rename(name+ext,name+type)
-            print_result("변환성공")
+            print_result(f"{ext}확장자를 {type} 확장자로 변환성공")
 
 
 def Make_Test():
     os.chdir('C:/Users/백 아울/Desktop/스크립트 언어/프로젝트1/Test_file')
-    sample = ['.doc', '.ppt', '.pdf', '.hwp', '.jpg', '.png', 'zip']
+
     folder_name = list(range(random.randint(4, 10)))
     # 랜덤상위폴더
     head = random.sample(folder_name, (random.randint(1, 4)))
@@ -63,49 +63,49 @@ def Make_Test():
     print("테스트 파일 생성 완료")
 
 def select_pattern(event=None):
-    print(history_listbox.curselection())  # curselection 선택된 영역의 인덱스 튜플로
-    pattern = ''
-    for i in history_listbox.curselection():
-        print(history_listbox.get(i))  # 인덱스의 실제 값 가져오기
-        pattern = history_listbox.get(i)
+    print("select_pattern-----------------------" )
     history_frame.place_forget()
-    File_Transform(pattern)
+    File_Transform(history_listbox.get(history_listbox.curselection()))
+    history_listbox.delete(history_listbox.curselection())
 
 def Only_pattern(event=None):
-    print(history_listbox.curselection())  # curselection 선택된 영역의 인덱스 튜플로
-    pattern = ''
-    for i in history_listbox.curselection():
-        print(history_listbox.get(i))  # 인덱스의 실제 값 가져오기
-        pattern = history_listbox.get(i)
-    history_frame.place_forget()
-    return File_Transform()
+    for in_path in file_list:
+        name, ext = os.path.splitext(in_path)
+        print(ext, history_listbox.get(history_listbox.curselection()))
+        if not ext == history_listbox.get(history_listbox.curselection()):
+            print(in_path + "삭제\n")
+            # file_list.pop(in_path)
+    print(history_listbox.get(history_listbox.curselection()))
+    history_listbox.delete(history_listbox.curselection())
+    next()
 
-def Foam_Select():
-    print("확장자 선택")
+
+
+def File_Search(type):
+    for in_path in file_list:
+        name, ext = os.path.splitext(in_path)
+        if not ext == type:
+            print(in_path + "삭제\n")
+            #file_list.pop(in_path)
+
+
+def Foam_Select(acess):
+    print_result("선택할 타입을 골라주세요")
+    print("확장자 선택 전")
+    now = False
     delete_button()
     history_frame.place(x=300,y=60)
-    history_listbox.insert(0,'.doc')
-    history_listbox.insert(1, '.ppt')
-    history_listbox.insert(2,'.pdf')
-    history_listbox.insert(3,'.hwp')
-    history_listbox.insert(4,'.jpg')
-    history_listbox.insert(5,'.png')
-    history_listbox.insert(6,'.zip')
+    for i in range(0,7):
+        history_listbox.insert(i,sample[i])
     history_listbox.insert(END, '.[]')
     history_listbox.pack(side=LEFT, fill=X, expand=True)
-    history_listbox.bind('<<ListboxSelect>>', select_pattern)
+    history_listbox.bind('<<ListboxSelect>>',acess)
     scrollbar = Scrollbar(history_frame)
     scrollbar.pack(side=RIGHT, fill=Y)
     history_listbox.configure(yscrollcommand=scrollbar.set)
     scrollbar.configure(command=history_listbox.yview)
 
 
-def delete_button():
-    global Acess_List
-    for i in Acess_List:
-        i.place_forget()
-        #Acess_List.pop()
-    print("버튼 지움 ")
 
 def Button_Work_1(work=False):
     print("변환")
@@ -131,17 +131,30 @@ def sub_Button_1_1():
     global file_list
     file_list=[]
     File_Select()
-    delete_button()
-    Foam_Select()
-    #File_Transform()
+    Foam_Select(select_pattern)
     #결과 출력
 
 def sub_Button_1_2():
     global file_list
     file_list = []
     File_Select()
-    #File_Select() 여기에 확장자 선택하도록
-    File_Transform(True)
+    print("파일1")
+    Foam_Select(Only_pattern)
+
+
+def next():
+    print("파일2")
+    Foam_Select(select_pattern)
+    print_result("바꾸실 타입을 골라주세요")
+    print("파일3")
+
+
+def delete_button():
+    global Acess_List
+    for i in Acess_List:
+        i.place_forget()
+        #Acess_List.pop()
+    print("버튼 지움 ")
 
 def print_result(msg=' '):
     delete_button()
@@ -150,6 +163,8 @@ def print_result(msg=' '):
     text.insert(END, msg)
     text.place(x=300,y=250)
     Acess_List.append(text)
+
+
 
 
 #프레임 라인
