@@ -25,17 +25,19 @@ Acess_List =[] #떠잇는 위젯들
 def stop(event=None):
     window.quit()
 
-def File_Select():
+def File_Select(A=False):
     global file_list
     global text
     print("파일 선택")
-    file_names = filedialog.askopenfilenames(title='Select text files',filetypes=(("all files", "*.*"),("text files (.txt)", "*.txt") ))
+    file_names = filedialog.askopenfilenames(title='Select files',filetypes=(("all files", "*.*"),("text files (.txt)", "*.txt") ))
     file_list.extend(file_names)
     #스크롤 갱신
     text.delete("0.0", END)
     text.insert(END, file_list)
     text.pack(side=LEFT)
 
+def Folder_Select():
+    return filedialog.askdirectory(parent=window, initialdir="/", title='Select a directory')
 
 def File_Transform(type):
     for in_path in file_list:
@@ -77,7 +79,7 @@ def Only_pattern(event=None):
             # file_list.pop(in_path)
     print(history_listbox.get(history_listbox.curselection()))
     history_listbox.delete(history_listbox.curselection())
-    next()
+    sub_Button_1_2_next()
 
 
 
@@ -87,7 +89,7 @@ def File_Search(type):
         if not ext == type:
             print(in_path + "삭제\n")
             #file_list.pop(in_path)
-
+    sub_Button_2_1_next()
 
 def Foam_Select(acess):
     print_result("선택할 타입을 골라주세요")
@@ -104,10 +106,25 @@ def Foam_Select(acess):
     scrollbar.pack(side=RIGHT, fill=Y)
     history_listbox.configure(yscrollcommand=scrollbar.set)
     scrollbar.configure(command=history_listbox.yview)
+    Acess_List.append(history_listbox)
 
+#사용고려
+def Entry_path():
+    entry = Entry(window)
+    entry.bind('<<Return>>',entry.place_forget())
+    entry.place(x=300, y=100)
 
+    print("엔트리 성공")
+    return entry.get()
+
+def move_files(path):
+    for in_path in file_list:
+        dir_path, name = os.path.split(in_path)
+        os.replace(dir_path+'/'+name,path+'/'+name)
+    print("이동 완료")
 
 def Button_Work_1(work=False):
+    delete_button()
     print("변환")
     type_1 =Button(text="(1)그냥 파일 변환하기", command=sub_Button_1_1)
     type_2 =Button(text="(2)대상 파일 확장자 선정 후 변환", command=sub_Button_1_2)
@@ -118,12 +135,16 @@ def Button_Work_1(work=False):
 
 def Button_Work_2(work=False):
     print("위치 이동")
+    delete_button()
 
-    Acess_List.append(Button_Work_2)
+    type_1 = Button(text="(1)선택한 확장자 파일 이동", command=sub_Button_2_1)
+    Acess_List.append(type_1)
+    Acess_List.append(type_1)
+    type_1.place(x=300, y=60)
 
 def Button_Work_3(work=False):
     print("이름 변경")
-
+    delete_button()
     Acess_List.append(Button_Work_3)
 
 
@@ -141,8 +162,24 @@ def sub_Button_1_2():
     print("파일1")
     Foam_Select(Only_pattern)
 
+def sub_Button_2_1():
+    global file_list
+    file_list = []
+    File_Select()
+    print_result("바꾸실 타입을 골라주세요")
+    file_type =Entry_path()
+    File_Search(file_type)
+    #sub_Button_2_1_next()
+    print("확장자 설정 완료")
 
-def next():
+def sub_Button_2_1_next():
+    Path = Folder_Select()
+    print("이동 시작")
+    move_files(Path)
+    print_result(f"{Path}위치로 이동 완료")
+
+
+def sub_Button_1_2_next():
     print("파일2")
     Foam_Select(select_pattern)
     print_result("바꾸실 타입을 골라주세요")
@@ -153,7 +190,6 @@ def delete_button():
     global Acess_List
     for i in Acess_List:
         i.place_forget()
-        #Acess_List.pop()
     print("버튼 지움 ")
 
 def print_result(msg=' '):
@@ -163,8 +199,6 @@ def print_result(msg=' '):
     text.insert(END, msg)
     text.place(x=300,y=250)
     Acess_List.append(text)
-
-
 
 
 #프레임 라인
