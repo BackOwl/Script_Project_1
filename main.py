@@ -76,7 +76,6 @@ def Only_pattern(event=None):
         print(ext, history_listbox.get(history_listbox.curselection()))
         if not ext == history_listbox.get(history_listbox.curselection()):
             print(in_path + "삭제\n")
-            # file_list.pop(in_path)
     print(history_listbox.get(history_listbox.curselection()))
     history_listbox.delete(history_listbox.curselection())
     sub_Button_1_2_next()
@@ -88,8 +87,7 @@ def File_Search(type):
         name, ext = os.path.splitext(in_path)
         if not ext == type:
             print(in_path + "삭제\n")
-            #file_list.pop(in_path)
-    sub_Button_2_1_next()
+
 
 def Foam_Select(acess):
     print_result("선택할 타입을 골라주세요")
@@ -111,11 +109,12 @@ def Foam_Select(acess):
 #사용고려
 def Entry_path():
     entry = Entry(window)
-    entry.bind('<<Return>>',entry.place_forget())
+    entry.bind('<Return>',sub_Button_2_1_next)
+    Acess_List.append(entry)
     entry.place(x=300, y=100)
 
     print("엔트리 성공")
-    return entry.get()
+    File_Search(entry.get())
 
 def move_files(path):
     for in_path in file_list:
@@ -166,13 +165,11 @@ def sub_Button_2_1():
     global file_list
     file_list = []
     File_Select()
-    print_result("바꾸실 타입을 골라주세요")
-    file_type =Entry_path()
-    File_Search(file_type)
-    #sub_Button_2_1_next()
+    print_result("바꾸실 타입을 위 entry에 입력해주세요. ex) .jpg")
+    Entry_path()
     print("확장자 설정 완료")
 
-def sub_Button_2_1_next():
+def sub_Button_2_1_next(A):
     Path = Folder_Select()
     print("이동 시작")
     move_files(Path)
