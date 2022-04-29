@@ -17,6 +17,7 @@ sample = ['.doc', '.ppt', '.pdf', '.hwp', '.jpg', '.png', 'zip']
 
 history_frame = LabelFrame(text='Foam_Select')
 history_listbox = Listbox(history_frame, selectmode='single', height=5)
+entry = Entry(window)
 file_list = [] #선택한 파일 주소들의 튜플
 
 Acess_List =[] #떠잇는 위젯들
@@ -83,10 +84,13 @@ def Only_pattern(event=None):
 
 
 def File_Search(type):
+    global file_list
+    print("파일 선별"+type)
     for in_path in file_list:
         name, ext = os.path.splitext(in_path)
         if not ext == type:
             print(in_path + "삭제\n")
+            file_list.remove(in_path)
 
 
 def Foam_Select(acess):
@@ -108,17 +112,19 @@ def Foam_Select(acess):
 
 #사용고려
 def Entry_path():
-    entry = Entry(window)
+
     entry.bind('<Return>',sub_Button_2_1_next)
     Acess_List.append(entry)
     entry.place(x=300, y=100)
 
     print("엔트리 성공")
-    File_Search(entry.get())
+
 
 def move_files(path):
+    global file_list
     for in_path in file_list:
         dir_path, name = os.path.split(in_path)
+        print(file_list)
         os.replace(dir_path+'/'+name,path+'/'+name)
     print("이동 완료")
 
@@ -170,6 +176,7 @@ def sub_Button_2_1():
     print("확장자 설정 완료")
 
 def sub_Button_2_1_next(A):
+    File_Search(entry.get())
     Path = Folder_Select()
     print("이동 시작")
     move_files(Path)
