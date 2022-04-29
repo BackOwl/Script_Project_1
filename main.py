@@ -1,5 +1,4 @@
 from tkinter import *
-import function as fun #함수 정의
 from tkinter.ttk import *
 from tkinter import filedialog
 from tkinter.scrolledtext import ScrolledText
@@ -7,6 +6,7 @@ import os
 import shutil
 import random
 from pathlib import Path
+import function as fun #함수 정의
 
 window = Tk()
 window.title("Project_1_transformer")
@@ -16,7 +16,7 @@ window.resizable(False, False)
 sample = ['.doc','.ppt','.pdf', '.hwp', '.jpg','.png','zip']
 folder_name =list(range(random.randint(4,10)))
 
-file_list =[] #선택한 파일 주소들의 리스트
+file_list = [] #선택한 파일 주소들의 튜플
 
 #함수 라인
 def stop(event=None):
@@ -27,7 +27,7 @@ def File_Select():
     global text
     print("파일 선택")
     file_names = filedialog.askopenfilenames(title='Select text files',filetypes=(("all files", "*.*"),("text files (.txt)", "*.txt") ))
-    file_list += file_names
+    file_list.extend(file_names)
     #스크롤 갱신
     text.delete("0.0", END)
     text.insert(END, file_list)
@@ -73,8 +73,8 @@ def Foam_Select():
 
 def Button_Work_1():
     print("변환")
-    type_1 =Button(text="(1)그냥 파일 변환하기", command=Button_Work_1)
-    type_2 =Button(text="(2)대상 파일 확장자 선정 후 변환", command=Button_Work_1)
+    type_1 =Button(text="(1)그냥 파일 변환하기", command=sub_Button_1_1)
+    type_2 =Button(text="(2)대상 파일 확장자 선정 후 변환", command=sub_Button_1_2)
     #case_check =Checkbutton(text="대상 파일 확장자 선정 후 변환", varialbe =ignore_case )
     #type_1 = Button(text="파일 변환하기", command=Button_Work_1)
     #ignore_case.set(0)
@@ -89,13 +89,17 @@ def Button_Work_3():
 
 
 def sub_Button_1_1():
+    global file_list
+    file_list=[]
     File_Select()
     File_Transform()
 
 def sub_Button_1_2():
+    global file_list
+    file_list = []
     File_Select()
-    file_list += {"change to"}
-    File_Select()
+    file_list+="change to"
+    #File_Select() 여기에 확장자 선택하도록
     File_Transform(True)
 
 def print_result():
