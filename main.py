@@ -13,8 +13,7 @@ window.title("Project_1_transformer")
 window.geometry("600x400+%d+%d" % (window.winfo_screenwidth()/4, window.winfo_screenheight()/4))
 window.resizable(False, False)
 
-sample = ['.doc','.ppt','.pdf', '.hwp', '.jpg','.png','zip']
-folder_name =list(range(random.randint(4,10)))
+
 
 history_frame = LabelFrame(text='Foam_Select')
 history_listbox = Listbox(history_frame, selectmode='single', height=5)
@@ -45,11 +44,13 @@ def File_Transform(type):
             #확장자 지정한걸로 바꾸기
             print(name+ext,"을 변환합니다",name+type)
             os.rename(name+ext,name+type)
-            print("변환성공")
+            print_result("변환성공")
 
 
 def Make_Test():
     os.chdir('C:/Users/백 아울/Desktop/스크립트 언어/프로젝트1/Test_file')
+    sample = ['.doc', '.ppt', '.pdf', '.hwp', '.jpg', '.png', 'zip']
+    folder_name = list(range(random.randint(4, 10)))
     # 랜덤상위폴더
     head = random.sample(folder_name, (random.randint(1, 4)))
     # all_dir.append('c:/root_folder/'+str(i)+'dir')
@@ -69,13 +70,20 @@ def select_pattern(event=None):
         pattern = history_listbox.get(i)
     history_frame.place_forget()
     File_Transform(pattern)
-    return pattern
 
+def Only_pattern(event=None):
+    print(history_listbox.curselection())  # curselection 선택된 영역의 인덱스 튜플로
+    pattern = ''
+    for i in history_listbox.curselection():
+        print(history_listbox.get(i))  # 인덱스의 실제 값 가져오기
+        pattern = history_listbox.get(i)
+    history_frame.place_forget()
+    return File_Transform()
 
 def Foam_Select():
     print("확장자 선택")
     delete_button()
-    history_frame.place(x=300,y=130)
+    history_frame.place(x=300,y=60)
     history_listbox.insert(0,'.doc')
     history_listbox.insert(1, '.ppt')
     history_listbox.insert(2,'.pdf')
@@ -135,8 +143,14 @@ def sub_Button_1_2():
     #File_Select() 여기에 확장자 선택하도록
     File_Transform(True)
 
-def print_result():
-    pass
+def print_result(msg=' '):
+    delete_button()
+    text = ScrolledText(width=40, height=5, font=("Consolas", 10))
+    text.delete("0.0", END)
+    text.insert(END, msg)
+    text.place(x=300,y=250)
+    Acess_List.append(text)
+
 
 #프레임 라인
 work_frame = Frame()
@@ -144,13 +158,16 @@ work_frame.pack()
 
 #버튼 라인
 Select1 =Button(text="파일 변환",command = Button_Work_1)
-Select2 =Button(text="파일 이동",command = delete_button)
-#Select2 =Button(text="파일 이동",command = Button_Work_2)
+Select2 =Button(text="파일 이동",command = Button_Work_2)
 Select3 =Button(text="이름 추가",command = Button_Work_3)
+Retry_button =Button(text="Retry",command = delete_button)
+Exit_button =Button(text="Exit",command = stop)
 
 Select3.place(x=500,y=20)
 Select2.place(x=400,y=20)
 Select1.place(x=300,y=20)
+Retry_button.place(x=410,y=350)
+Exit_button.place(x=510,y=350)
 
 #라벨 라인
 ex_label1 =Label(text="이곳은 버튼공간")
@@ -162,6 +179,7 @@ text = ScrolledText(width=40, height=30, font=("Consolas", 10))
 text.delete("0.0", END)
 text.insert(END, file_list)
 text.pack(side=LEFT)
+print_result()
 
 #단축키 라인
 window.bind("<Escape>",stop)
