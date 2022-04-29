@@ -50,7 +50,7 @@ def File_Transform(type):
             print_result(f"{ext}확장자를 {type} 확장자로 변환성공")
 
 
-def Make_Test():
+def Make_Test(enter=None):
     os.chdir('C:/Users/백 아울/Desktop/스크립트 언어/프로젝트1/Test_file')
 
     folder_name = list(range(random.randint(4, 10)))
@@ -63,7 +63,7 @@ def Make_Test():
         file_name = str(random.randint(1000, 100000)) + str("".join(random.sample(sample, 1)))
         Path(file_name).touch()
 
-    print("테스트 파일 생성 완료")
+    print_result("테스트 파일 생성 완료")
 
 def select_pattern(event=None):
     print("select_pattern-----------------------" )
@@ -91,6 +91,7 @@ def File_Search(type):
         if not ext == type:
             print(in_path + "삭제\n")
             file_list.remove(in_path)
+            print(file_list)
 
 
 def Foam_Select(acess):
@@ -119,12 +120,18 @@ def Entry_path():
 
     print("엔트리 성공")
 
+def add_number():
+    numberic = len(file_list)
+    for number in range(numberic):
+        dir_path, name = os.path.split(file_list[number])
+        name2, ext = os.path.splitext(file_list[number])
+        os.replace(dir_path+'/'+name,  dir_path+'/'+name2+'_'+(str)(number)+ext)
+    print_result("숫자 설정 완료")
 
 def move_files(path):
     global file_list
     for in_path in file_list:
         dir_path, name = os.path.split(in_path)
-        print(file_list)
         os.replace(dir_path+'/'+name,path+'/'+name)
     print("이동 완료")
 
@@ -144,13 +151,16 @@ def Button_Work_2(work=False):
 
     type_1 = Button(text="(1)선택한 확장자 파일 이동", command=sub_Button_2_1)
     Acess_List.append(type_1)
-    Acess_List.append(type_1)
     type_1.place(x=300, y=60)
 
 def Button_Work_3(work=False):
     print("이름 변경")
     delete_button()
-    Acess_List.append(Button_Work_3)
+    type_1 = Button(text="(1)선택 순서대로 숫자를 붙입니다 ", command=sub_Button_3_1)
+
+    Acess_List.append(type_1)
+    type_1.place(x=300, y=60)
+
 
 
 def sub_Button_1_1():
@@ -175,7 +185,15 @@ def sub_Button_2_1():
     Entry_path()
     print("확장자 설정 완료")
 
-def sub_Button_2_1_next(A):
+def sub_Button_3_1():
+    global file_list
+    file_list = []
+    File_Select()
+    add_number()
+
+
+
+def sub_Button_2_1_next(enter=None):
     File_Search(entry.get())
     Path = Folder_Select()
     print("이동 시작")
